@@ -8,7 +8,7 @@ int main (void){
 
     int choice = 0;
 
-    int name = 0;
+    char name = 0;
 
 // Starting the Program
 
@@ -16,13 +16,14 @@ int main (void){
 
     printf("What is your name?\n");
 
-    scanf("%d", &name);
+    scanf("%s", &name);
 
 // Prompting the user input
 
 
 
     printf("What would you like to do?\n1. View Portfolio\n2. Purchase Stocks\n3. Sell Stocks\n4. View Market Prices\n");
+
     scanf("%d", &choice);
 
     if (choice == 1){
