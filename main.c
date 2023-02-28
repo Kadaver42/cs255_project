@@ -39,7 +39,7 @@ int main (void){
     strcpy(port[1].tick, "TSLA");
     port[1].price = 462.45;
 
-    strcpy(port[5].owner, "name");
+
 // Starting the Program
 
 
