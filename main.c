@@ -3,7 +3,7 @@
 
 
 struct stock{
-    char owner[25];
+    char owner[30];
     char tick[6];
     double price;
 };
@@ -11,7 +11,7 @@ struct stock{
 int main (void){
 
     int choice = 0;
-    char name[25] = "";
+    char name[30] = "";
 
     struct stock port[10]; // array of portfolio ticker symbols Will be updated when a stock is sold or bought. Current max: 10
 
@@ -22,7 +22,10 @@ int main (void){
     */
     printf("Stock Market Tracker & Portfolio\n");
     printf("What is your name?\n");
-    scanf("%s", name);
+
+    fgets(name, 30, stdin);  //buffer protected input (can handle spaces)
+    if ((strlen(name) > 0) && (name[strlen (name) - 1] == '\n')) //delete newline
+        name[strlen (name) - 1] = '\0';
 
 
 
