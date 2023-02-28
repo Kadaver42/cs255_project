@@ -22,16 +22,16 @@ int main (void){
     */
     printf("Stock Market Tracker & Portfolio\n");
     printf("What is your name?\n");
-    scanf("%s", &name);
+    scanf("%s", name);
 
 
 
-    strcpy(port[0].owner, &name);
+    strcpy(port[0].owner, name);
 
     strcpy(port[0].tick, "APPL");
     port[0].price = 147.92;
 
-    strcpy(port[1].owner, &name);
+    strcpy(port[1].owner, name);
 
     strcpy(port[1].tick, "TSLA");
     port[1].price = 462.45;
