@@ -53,7 +53,7 @@ void chop(char *str, size_t n) { // remove specified amount of characters from t
 
 
 struct string apiRes;// global var because im lazy.
-
+char url[1000];
 
 
 
@@ -80,12 +80,13 @@ struct stock{ // struct to store portfolio data. each struck holds all pertinent
     char owner[30];
     char tick[6];
     double price;
-    double qty;
+    int qty;
     double put;
     double call;
 };
 
-struct stock port[10]; // create global portfolio of stocks.
+struct stock port[100]; // create global portfolio of stocks.
+int numStock = 0;
 
 void priceUpt(struct string *data  ){ // parse api output and update the current market price of all stocks in the portfolio.
 
@@ -144,14 +145,73 @@ _Noreturn void *portUpdate(void *vargp){
     }
 }
 
+void buyStock( char name[30]  ){
+
+    struct stock buy;
+    int owned = -1;
+    int menu = 0;
+    puts("Enter Ticker Symbol!");
+    scanf("%s", buy.tick);
+    puts("Enter Quantity to buy!");
+    scanf("%d", &buy.qty);
+    puts("Would you like to assign a call price?");
+    printf("1. Yes\n2. No\n");
+    scanf("%d", &menu);
+        if(menu == 1){
+            puts("Enter call price");
+            scanf("%lf", &buy.call);
+        }
+    menu = 0;
+    puts("Would you like to assign a put price?");
+    printf("1. Yes\n2. No\n");
+    scanf("%d", &menu);
+        if(menu == 1){
+            puts("Enter put price");
+            scanf("%lf", &buy.put);
+        }
+    menu = 0;
+
+    for (int i = 0; i < sizeof(port) / sizeof(port[0]); i++) {
+        if (strcmp(port[i].tick, buy.tick) == 0 && strcmp(port[i].owner, name) == 0 ) {
+            owned = i;
+        }
+    }
+
+    if (owned == -1){
+
+        strcpy(buy.owner, name);
+
+        port[numStock] = buy;
+
+        numStock++;
+
+        strcat(buy.tick, ",");
+        strcat(url, buy.tick);
+        curl_easy_setopt(hnd, CURLOPT_URL, url);
+        printf("%s\n", url);
+
+    }
+    else {
+
+        port[owned].qty += buy.qty;
+        port[owned].call = buy.call;
+        port[owned].put = buy.put;
+    }
+
+    curl_easy_perform(hnd);
+    puts("Updating prices.");
+    sleep(7);
+    printf("%s\n", apiRes.ptr); //print string data
+    priceUpt(&apiRes);
+    puts("Success!");
+}
+
+
 int main() {
     malloc(sizeof(struct stock));
     int choice = 0;
     char name[30] = "";
 
-    for (int i =0; i < sizeof(port)/sizeof(port[0]) ; i++ ){
-        strcpy(port[i].owner, "name");
-        }
 
     CURLcode res;
     hnd = curl_easy_init();  //start curl
@@ -159,8 +219,10 @@ int main() {
      // make string
     init_string(&apiRes);
 
+    strcpy(url, "https://mboum-finance.p.rapidapi.com/qu/quote?symbol=");
+
     curl_easy_setopt(hnd, CURLOPT_CUSTOMREQUEST, "GET");
-    curl_easy_setopt(hnd, CURLOPT_URL, "https://mboum-finance.p.rapidapi.com/qu/quote?symbol=AAPL,TSLA,GOOGL"); // curl setup to pull from finance api this specific one gets aapl
+    curl_easy_setopt(hnd, CURLOPT_URL, url); // curl setup to pull from finance api
 
     struct curl_slist *headers = NULL;
     headers = curl_slist_append(headers, "X-RapidAPI-Key: 4b7b4a34bamshfd1fdd84e4fd488p1e26e4jsnd492e851a547");
@@ -192,51 +254,39 @@ int main() {
         name[strlen (name) - 1] = '\0';
 
 
-
-    strcpy(port[0].owner, name);
-
-    strcpy(port[0].tick, "APPL");
-
-    strcpy(port[1].owner, name);
-    strcpy(port[1].tick, "TSLA");
-
-
-
 // Starting the Program
 
 
 // Prompting the user input
-    printf("What would you like to do?\n1. View Portfolio\n2. Purchase Stocks\n3. Sell Stocks\n4. View Market Prices\n");
-    scanf("%d", &choice);
+    while(choice != 5){
 
-    if (choice == 1){
-        printf("%s's Portfolio\n", name );
-        for (int i =0; i < sizeof(port)/sizeof(port[0]) ; i++ ){
-            if (strcmp( port[i].owner, name ) == 0) {
-                printf("%d: %s -- %4.2f\n", i+1, port[i].tick, port[i].price);
+        printf("What would you like to do?\n1. View Portfolio\n2. Purchase Stocks\n3. Sell Stocks\n4. View Market Prices\n5. Exit\n");
+        scanf("%d", &choice);
+
+        if (choice == 1) {
+            printf("%s's Portfolio\n", name);
+            for (int i = 0; i < sizeof(port) / sizeof(port[0]); i++) {
+                if (strcmp(port[i].owner, name) == 0) {
+                    printf("%d: %s -- $%4.2f\n", i + 1, port[i].tick, port[i].price*port[i].qty);
+                }
             }
+            printf("\n");
+        } else if (choice == 2) {
+            puts("Buy Stock");
+            buyStock(name);
+
+        } else if (choice == 3) {
+            puts("Sell Stocks");
+        } else if (choice == 4) {
+            puts("View Prices");
+        } else if (choice == 5) {
+            puts("Exit");
+        } else {
+            puts("Not a valid response.");
         }
 
+        sleep(3);
     }
-
-    else if (choice == 2) {
-        puts("Buy Stock");
-
-    }
-
-    else if (choice == 3) {
-        puts("Sell Stocks");
-    }
-
-    else if (choice == 4) {
-        puts ("View Prices");
-    }
-
-    else {
-        puts("Not a valid response.");
-    }
-
-
 
 
     /* always cleanup */
@@ -245,8 +295,5 @@ int main() {
     //pthread_exit(NULL);
     //puts("clean");
 
-    while(1){
-        sleep(10);
-    }
     return 0;
 }
