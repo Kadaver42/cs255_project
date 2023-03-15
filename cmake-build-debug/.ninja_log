@@ -1,0 +1,13 @@
+# ninja log v5
+2	726	6992711885362059	CMakeFiles/curltest.dir/main.c.obj	fe349a9302403763
+2	802	7005594213198932	CMakeFiles/curl_test.dir/main.c.obj	45b00fac455df8f4
+0	834	7005593979398467	CMakeFiles/example.dir/main.c.obj	941fb42717cc2be5
+803	923	7005594214384490	curl_test.exe	20d8fecb6655dcfe
+3	780	7005595630816872	CMakeFiles/curl_test.dir/main.c.obj	45b00fac455df8f4
+780	891	7005595631887230	curl_test.exe	20d8fecb6655dcfe
+3	666	7005596271246492	CMakeFiles/curl_test.dir/main.c.obj	45b00fac455df8f4
+666	759	7005596272139130	curl_test.exe	20d8fecb6655dcfe
+2	825	7005597004273349	CMakeFiles/curl_test.dir/main.c.obj	45b00fac455df8f4
+826	942	7005597005408458	curl_test.exe	20d8fecb6655dcfe
+2	791	7005597550983696	CMakeFiles/curl_test.dir/main.c.obj	45b00fac455df8f4
+792	895	7005597551993671	curl_test.exe	20d8fecb6655dcfe
